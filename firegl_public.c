@@ -4463,8 +4463,13 @@ static void kcl_mem_pat_setup (void *info)
 
     if (cpu_has_pge)
     {
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,20,0)
         cr4 = read_cr4();
         write_cr4(cr4 & ~X86_CR4_PGE);
+#else
+        cr4 = __read_cr4();
+        __write_cr4(cr4 & ~X86_CR4_PGE);
+#endif
     }
      __flush_tlb();
 
@@ -4477,7 +4482,11 @@ static void kcl_mem_pat_setup (void *info)
     write_cr0(cr0 & 0xbfffffff);
     if (cpu_has_pge)
     {
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,20,0)
         write_cr4(cr4);
+#else
+        __write_cr4(cr4);
+#endif
     }
     local_irq_restore(flags);
 
@@ -4504,8 +4513,13 @@ static void kcl_mem_pat_restore (void *info)
 
     if (cpu_has_pge)
     {
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,20,0)
         cr4 = read_cr4();
         write_cr4(cr4 & ~X86_CR4_PGE);
+#else
+        cr4 = __read_cr4();
+        __write_cr4(cr4 & ~X86_CR4_PGE);
+#endif
     }
      __flush_tlb();
   
@@ -4517,7 +4531,11 @@ static void kcl_mem_pat_restore (void *info)
     write_cr0(cr0 & 0xbfffffff);
     if (cpu_has_pge)
     {
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,20,0)
         write_cr4(cr4);
+#else
+        __write_cr4(cr4);
+#endif
     }
     local_irq_restore(flags);
 
